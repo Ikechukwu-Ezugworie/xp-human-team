@@ -1,33 +1,49 @@
-import os
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
+import os
+from app import models
+from app.routers import auth, rooms, messages
+from app.websocket import manager
 
-from .routers import auth, messages, rooms
-from .websocket import websocket_endpoint
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./chat.db")
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-app = FastAPI(title="Chat App Backend", version="1.0.0")
+models.Base.metadata.create_all(bind=engine)
 
-_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+app = FastAPI(title="Chat API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_origins,
+    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(messages.router, prefix="/messages", tags=["messages"])
-app.include_router(rooms.router, prefix="/rooms", tags=["rooms"])
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-
-@app.websocket("/ws")
-async def websocket_route(websocket):
-    await websocket_endpoint(websocket)
-
+app.include_router(auth.router)
+app.include_router(rooms.router)
+app.include_router(messages.router)
 
 @app.get("/health")
-async def health_check():
-    return {"status": "ok", "service": "chat-backend"}
+async def health():
+    return {"status": "ok"}
+
+@app.websocket("/ws/{room_id}")
+async def websocket_endpoint(room_id: int, websocket: WebSocket, db: Session = Depends(get_db)):
+    await manager.connect(room_id, websocket)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            await manager.broadcast(room_id, data)
+    except WebSocketDisconnect:
+        await manager.disconnect(room_id, websocket)
