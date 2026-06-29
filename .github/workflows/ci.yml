@@ -33,6 +33,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
+            -Dsonar.organization=ikechukwu-ezugworie
             -Dsonar.projectKey=chat_app_backend_control
             -Dsonar.sources=backend/app/
             -Dsonar.tests=backend/tests/
@@ -60,6 +61,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
+            -Dsonar.organization=ikechukwu-ezugworie
             -Dsonar.projectKey=chat_app_frontend_control
             -Dsonar.sources=frontend/src/
             -Dsonar.tests=frontend/src/__tests__/
