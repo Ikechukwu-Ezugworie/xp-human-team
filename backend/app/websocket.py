@@ -1,4 +1,26 @@
-async def websocket_endpoint(websocket):
-    # WebSocket logic — to be implemented during sprints
-    await websocket.accept()
-    await websocket.close()
+from fastapi import WebSocket
+from typing import Dict, List
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[int, List[WebSocket]] = {}
+
+    async def connect(self, room_id: int, websocket: WebSocket):
+        await websocket.accept()
+        if room_id not in self.active_connections:
+            self.active_connections[room_id] = []
+        self.active_connections[room_id].append(websocket)
+
+    async def disconnect(self, room_id: int, websocket: WebSocket):
+        if room_id in self.active_connections:
+            self.active_connections[room_id].remove(websocket)
+
+    async def broadcast(self, room_id: int, data: dict):
+        if room_id in self.active_connections:
+            for connection in self.active_connections[room_id]:
+                try:
+                    await connection.send_json(data)
+                except:
+                    pass
+
+manager = ConnectionManager()
