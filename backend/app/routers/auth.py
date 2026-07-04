@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 from app.crud import create_user, get_user_by_username, verify_password, hash_password
 from app.schemas import UserRegister, UserLogin, TokenResponse
-from app.main import get_db
+from app.database import get_db
 import jwt
 import os
 

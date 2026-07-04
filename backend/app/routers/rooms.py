@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.crud import create_room, get_rooms, get_room_by_id, join_room
 from app.schemas import RoomCreate, Room
-from app.main import get_db
+from app.database import get_db
 
 router = APIRouter(prefix="/api/rooms", tags=["rooms"])
 

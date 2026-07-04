@@ -1,0 +1,9 @@
+sprint,developer,mental_demand,physical_demand,temporal_demand,effort,frustration,performance,overall_workload
+1,Sarah Chen,5,1,4,5,2,8,41.7
+1,Alex Rivera,6,2,5,6,3,7,48.3
+1,Maya Patel,5,2,4,5,2,8,43.3
+1,Jordan Kim,5,1,4,5,1,8,40.0
+2,Sarah Chen,6,1,5,6,3,7,48.3
+2,Alex Rivera,7,2,6,7,4,6,55.0
+2,Maya Patel,6,2,5,6,3,7,48.3
+2,Jordan Kim,6,1,5,6,2,7,45.7

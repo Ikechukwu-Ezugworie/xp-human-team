@@ -1,0 +1,5 @@
+Developer,Sprint,Date,Mental_Demand,Physical_Demand,Temporal_Demand,Performance,Effort,Frustration,MD_Weight,PD_Weight,TD_Weight,Perf_Weight,Effort_Weight,Frust_Weight,Weighted_Average
+[Dev1],[1],[YYYY-MM-DD],[0-100],[0-100],[0-100],[0-100],[0-100],[0-100],[w],[w],[w],[w],[w],[w],[final avg]
+[Dev2],[1],[YYYY-MM-DD],[0-100],[0-100],[0-100],[0-100],[0-100],[0-100],[w],[w],[w],[w],[w],[w],[final avg]
+[Dev3],[1],[YYYY-MM-DD],[0-100],[0-100],[0-100],[0-100],[0-100],[0-100],[w],[w],[w],[w],[w],[w],[final avg]
+[Dev4],[1],[YYYY-MM-DD],[0-100],[0-100],[0-100],[0-100],[0-100],[0-100],[w],[w],[w],[w],[w],[w],[final avg]

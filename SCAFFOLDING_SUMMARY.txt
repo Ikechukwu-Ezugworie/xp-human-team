@@ -1,0 +1,251 @@
+================================================================================
+TEAM A (HUMAN-ONLY CONTROL GROUP) - SCAFFOLDING COMPLETE
+================================================================================
+
+This document summarizes what has been set up for the Team A control group.
+
+================================================================================
+MAIN DOCUMENTATION
+================================================================================
+
+1. README.md
+   - Quick start and setup instructions
+   - Commit rules and enforcement via pre-commit hook
+   - Overview of sprint execution protocol
+   - Data collection overview
+
+2. GETTING_STARTED.md
+   - Step-by-step setup guide (Day 1)
+   - Sprint cycle breakdown (Monday-Friday)
+   - Rules and verification checklist
+   - Key contacts and Q&A
+
+3. SPRINT_EXECUTION_CHECKLIST.md
+   - Pre-sprint setup verification
+   - Monday-Friday checklist for each sprint
+   - Team sign-off section (Scrum Master + 4 devs)
+   - Used after each sprint to verify compliance
+
+================================================================================
+DATA COLLECTION TEMPLATES (For Sprints 1, 2, 3, 4)
+================================================================================
+
+PLANNING LOGS
+   Location: docs/planning_logs/SPRINT_1_TEMPLATE.md
+   Content: Estimation, story splitting, planning poker results
+   Data: Duration, estimation rounds, total points committed
+   Action: Copy template, rename SPRINT_2/3/4, fill in after planning session
+
+DESIGN NOTES
+   Location: docs/design_notes/SPRINT_1_TEMPLATE.md
+   Content: Design decisions, architecture, simplicity assessment
+   Data: Design choices, rationale, alternatives considered, 1-5 simplicity score
+   Action: Copy template, rename SPRINT_2/3/4, fill in after design session
+
+OBSERVATION LOGS
+   Location: docs/observation_logs/SPRINT_1_TEMPLATE.md
+   Content: Pair programming observations, challenges, TDD compliance
+   Data: Session durations, switch frequency, retrospective notes, metrics
+   Action: Copy template, rename SPRINT_2/3/4, fill in daily + after Friday retrospective
+
+NASA-TLX SURVEYS
+   Location: docs/nasa_tlx/SPRINT_1_TEMPLATE.csv
+   Instructions: docs/nasa_tlx/NASA_TLX_INSTRUCTIONS.md
+   Content: Cognitive load assessment (6 dimensions × 4 developers)
+   Data: Raw scores (0-100), pairwise comparisons, weighted averages
+   Action: Each developer completes survey Friday PM using instructions; results entered in CSV
+
+================================================================================
+DATA EXTRACTION SCRIPTS (Already in Repo)
+================================================================================
+
+Located in scripts/:
+   - extract_commits.py — Extracts git commit data
+   - compute_metrics.py — Calculates throughput metrics
+   - fetch_sonarqube.py — Fetches code quality data
+   - parse_ci_logs.py — Extracts CI pipeline metrics
+
+Run after each sprint:
+   cd /path/to/xp-ai-experiment-control
+   python scripts/extract_commits.py .
+   python scripts/compute_metrics.py data/commits.csv
+   export SONAR_TOKEN=... && python scripts/fetch_sonarqube.py
+   python scripts/parse_ci_logs.py
+
+Output files (auto-created):
+   - data/commits.csv
+   - data/story_metrics.csv
+   - data/sonarqube_metrics.json
+   - data/ci_builds.csv
+
+================================================================================
+PRE-COMMIT HOOK SETUP
+================================================================================
+
+The repository has a pre-commit hook that enforces commit message format:
+
+   Format: SPRINT<num>-STORY<num>-[AI:NO]-<description>
+   
+   ✅ SPRINT1-STORY4-[AI:NO]-implement login
+   ❌ SPRINT1-STORY4-[AI:YES]-implement login (REJECTED)
+   ❌ implement login (REJECTED - missing format)
+
+The hook is configured in .pre-commit-config.yaml.
+
+To install (Day 1 setup):
+   cd /path/to/xp-ai-experiment-control
+   chmod +x .git/hooks/pre-commit
+
+================================================================================
+SPRINT RHYTHM
+================================================================================
+
+MONDAY 9:00-11:00 — Planning Game
+   → Output: docs/planning_logs/SPRINT_X_planning.md
+
+TUESDAY 10:00-11:00 — Design Session (Whiteboard Only)
+   → Output: docs/design_notes/SPRINT_X_design.md
+
+WEDNESDAY-THURSDAY Full Days — Implementation (TDD + Pair Programming)
+   → Output: Code commits (all tagged [AI:NO])
+   → Daily observation notes
+
+FRIDAY 9:00-11:00 AM — Refactoring
+   → Output: Refactoring commits
+
+FRIDAY 14:00-15:00 — Retrospective + NASA-TLX Surveys
+   → Output: docs/observation_logs/SPRINT_X_observations.md
+   → Output: docs/nasa_tlx/SPRINT_X_TEMPLATE.csv (completed by all 4 devs)
+
+AFTER SPRINT — Data Extraction
+   → Run scripts to extract metrics from git/SonarQube/CI
+
+================================================================================
+VERIFICATION AFTER EACH SPRINT
+================================================================================
+
+Scrum Master uses SPRINT_EXECUTION_CHECKLIST.md to verify:
+
+✓ All commits follow format and include [AI:NO]
+✓ TDD was followed (test commits before implementation)
+✓ Pair programming was conducted for 2+ hrs/day
+✓ No AI tools were used (team attestation)
+✓ CI pipeline passed (GitHub Actions)
+✓ SonarQube quality gate passed
+✓ All data files collected (planning, design, observations, NASA-TLX)
+
+Team members sign the checklist confirming no AI tool usage.
+
+================================================================================
+WHAT TEAM A PRODUCES
+================================================================================
+
+Code:
+   - A working real-time chat application
+   - All user stories implemented
+   - Full unit test coverage (TDD-first)
+   - SonarQube quality gate compliance
+
+Data (for comparison with Team B):
+   - Planning metrics (estimation accuracy, splitting frequency)
+   - Design quality scores (simplicity, completeness)
+   - Productivity metrics (velocity, time per story)
+   - Code quality metrics (complexity, duplication, coverage)
+   - Collaboration metrics (pair programming adherence)
+   - Cognitive load scores (NASA-TLX: mental demand, effort, frustration)
+   - CI metrics (build success rate, MTTR)
+
+================================================================================
+KEY RULES TO ENFORCE
+================================================================================
+
+1. NO AI TOOLS
+   - GitHub Copilot disabled in VS Code
+   - ChatGPT web interface not used
+   - No Gemini, Tabnine, Codeium, or similar
+   - All code written manually by human developers
+
+2. TDD (Test-Driven Development)
+   - Write test FIRST (RED)
+   - Write minimal code to pass (GREEN)
+   - Refactor without changing behavior
+   - Commit order: test commit, then implementation commit
+
+3. PAIR PROGRAMMING
+   - 2 pairs of 2 developers
+   - Partners rotate daily
+   - Driver and Navigator roles
+   - Switch roles every 15 minutes (use timer)
+
+4. COMMITS
+   - Format: SPRINT<num>-STORY<num>-[AI:NO]-<description>
+   - Pre-commit hook enforces this
+   - Atomic, well-documented commits
+   - Meaningful commit messages explaining the "why"
+
+5. CODE QUALITY
+   - All tests pass before committing
+   - SonarQube quality gate must pass
+   - GitHub Actions CI must pass
+   - No broken builds ever reach main
+
+================================================================================
+FILE LOCATIONS REFERENCE
+================================================================================
+
+Setup & Documentation:
+   - README.md                           → Setup instructions
+   - GETTING_STARTED.md                  → Step-by-step guide
+   - SPRINT_EXECUTION_CHECKLIST.md       → Verification checklist
+   - .pre-commit-config.yaml             → Commit hook config
+
+Sprint 1-4 Templates (copy and rename):
+   - docs/planning_logs/SPRINT_1_TEMPLATE.md        → Copy to SPRINT_2/3/4
+   - docs/design_notes/SPRINT_1_TEMPLATE.md         → Copy to SPRINT_2/3/4
+   - docs/observation_logs/SPRINT_1_TEMPLATE.md     → Copy to SPRINT_2/3/4
+   - docs/nasa_tlx/SPRINT_1_TEMPLATE.csv            → Copy to SPRINT_2/3/4
+
+Instructions:
+   - docs/nasa_tlx/NASA_TLX_INSTRUCTIONS.md         → NASA-TLX survey guide
+
+Data Extraction:
+   - scripts/extract_commits.py           → Run after each sprint
+   - scripts/compute_metrics.py           → Run after each sprint
+   - scripts/fetch_sonarqube.py           → Run after each sprint
+   - scripts/parse_ci_logs.py             → Run after each sprint
+
+Output (Auto-generated):
+   - data/commits.csv                    → From extract_commits.py
+   - data/story_metrics.csv              → From compute_metrics.py
+   - data/sonarqube_metrics.json         → From fetch_sonarqube.py
+   - data/ci_builds.csv                  → From parse_ci_logs.py
+
+================================================================================
+NEXT STEPS (For Scrum Master / Project Lead)
+================================================================================
+
+1. ✓ Scaffolding complete (this document)
+2. [ ] Team members set up local environments
+3. [ ] All AI plugins disabled in IDEs
+4. [ ] Pre-commit hook tested (successful & failed commits)
+5. [ ] First sprint planning session scheduled (Monday 9:00 AM)
+6. [ ] Product Owner ready with user stories
+7. [ ] SonarQube access configured and tokens set up
+8. [ ] Team members sign AI-usage pledge before first sprint
+
+================================================================================
+RESEARCH INTEGRITY NOTE
+================================================================================
+
+This control group's data integrity depends on:
+   - Strict adherence to human-only development (no AI assistance)
+   - Accurate data collection (templates filled out honestly)
+   - Complete process compliance (TDD, pair programming, etc.)
+   - Team attestation (each member signs off after each sprint)
+
+The comparison between Team A (human-only) and Team B (AI-assisted) is only
+valid if Team A's data represents authentic human-only development.
+
+================================================================================
+END OF SCAFFOLDING SUMMARY
+================================================================================

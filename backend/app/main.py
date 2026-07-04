@@ -1,15 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session
 import os
 from app import models
+from app.database import engine, get_db
 from app.routers import auth, rooms, messages
 from app.websocket import manager
-
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./chat.db")
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -22,13 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 app.include_router(auth.router)
 app.include_router(rooms.router)
