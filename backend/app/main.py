@@ -1,9 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 import os
 from app import models
-from app.database import engine, get_db
+from app.database import engine
 from app.routers import auth, rooms, messages
 from app.websocket import manager
 
@@ -28,11 +27,12 @@ async def health():
     return {"status": "ok"}
 
 @app.websocket("/ws/{room_id}")
-async def websocket_endpoint(room_id: int, websocket: WebSocket, db: Session = Depends(get_db)):
-    await manager.connect(room_id, websocket)
+async def websocket_endpoint(room_id: int, websocket: WebSocket, username: str = "anonymous"):
+    await manager.connect(room_id, websocket, username)
     try:
         while True:
-            data = await websocket.receive_json()
-            await manager.broadcast(room_id, data)
+            # Messages are persisted and broadcast via the REST endpoint;
+            # the socket stays open for presence and server pushes.
+            await websocket.receive_json()
     except WebSocketDisconnect:
         await manager.disconnect(room_id, websocket)
