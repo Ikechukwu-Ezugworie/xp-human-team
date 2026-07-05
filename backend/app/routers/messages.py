@@ -23,17 +23,20 @@ async def create_message(
     if not get_room_by_id(db, room_id):
         raise HTTPException(status_code=404, detail="Room not found")
     message = send_message(db, room_id, author_id=current_user.id, content=content)
-    await manager.broadcast(room_id, {
-        "type": "message",
-        "message": {
-            "id": message.id,
-            "room_id": message.room_id,
-            "author_id": message.author_id,
-            "author_name": current_user.username,
-            "content": message.content,
-            "created_at": message.created_at.isoformat(),
+    await manager.broadcast(
+        room_id,
+        {
+            "type": "message",
+            "message": {
+                "id": message.id,
+                "room_id": message.room_id,
+                "author_id": message.author_id,
+                "author_name": current_user.username,
+                "content": message.content,
+                "created_at": message.created_at.isoformat(),
+            },
         },
-    })
+    )
     return message
 
 

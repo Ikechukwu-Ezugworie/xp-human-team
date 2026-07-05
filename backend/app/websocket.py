@@ -15,7 +15,9 @@ class ConnectionManager:
 
     async def disconnect(self, room_id: int, websocket: WebSocket):
         connections = self.rooms.get(room_id, [])
-        self.rooms[room_id] = [(ws, name) for ws, name in connections if ws is not websocket]
+        self.rooms[room_id] = [
+            (ws, name) for ws, name in connections if ws is not websocket
+        ]
         await self.broadcast_presence(room_id)
 
     def online_users(self, room_id: int) -> List[str]:
@@ -28,7 +30,9 @@ class ConnectionManager:
         return users
 
     async def broadcast_presence(self, room_id: int):
-        await self.broadcast(room_id, {"type": "presence", "users": self.online_users(room_id)})
+        await self.broadcast(
+            room_id, {"type": "presence", "users": self.online_users(room_id)}
+        )
 
     async def broadcast(self, room_id: int, data: dict):
         for ws, _ in list(self.rooms.get(room_id, [])):

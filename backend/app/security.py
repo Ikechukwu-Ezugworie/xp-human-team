@@ -12,7 +12,9 @@ def create_access_token(user_id: int) -> str:
     return jwt.encode({"sub": str(user_id)}, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def get_current_user(authorization: str = Header(default=None), db: Session = Depends(get_db)):
+def get_current_user(
+    authorization: str = Header(default=None), db: Session = Depends(get_db)
+):
     from app.crud import get_user_by_id
 
     if not authorization or not authorization.startswith("Bearer "):

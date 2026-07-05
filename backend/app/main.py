@@ -22,12 +22,16 @@ app.include_router(auth.router)
 app.include_router(rooms.router)
 app.include_router(messages.router)
 
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
 
+
 @app.websocket("/ws/{room_id}")
-async def websocket_endpoint(room_id: int, websocket: WebSocket, username: str = "anonymous"):
+async def websocket_endpoint(
+    room_id: int, websocket: WebSocket, username: str = "anonymous"
+):
     await manager.connect(room_id, websocket, username)
     try:
         while True:

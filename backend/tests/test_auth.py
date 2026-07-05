@@ -1,5 +1,7 @@
 def register(client, username="testuser", password="testpass"):
-    return client.post("/api/auth/register", json={"username": username, "password": password})
+    return client.post(
+        "/api/auth/register", json={"username": username, "password": password}
+    )
 
 
 def auth_headers(client, username="testuser"):
@@ -26,7 +28,9 @@ def test_register_duplicate_rejected(client):
 
 
 def test_login_invalid_credentials(client):
-    response = client.post("/api/auth/login", json={"username": "ghost", "password": "nope"})
+    response = client.post(
+        "/api/auth/login", json={"username": "ghost", "password": "nope"}
+    )
     assert response.status_code == 401
 
 
@@ -47,7 +51,9 @@ def test_create_and_list_rooms(client):
 def test_send_and_fetch_message(client):
     headers = auth_headers(client, "dave")
     room = client.post("/api/rooms/", json={"name": "dev-chat"}, headers=headers).json()
-    sent = client.post(f"/api/messages/{room['id']}", json={"content": "hello"}, headers=headers)
+    sent = client.post(
+        f"/api/messages/{room['id']}", json={"content": "hello"}, headers=headers
+    )
     assert sent.status_code == 200
     assert sent.json()["author_name"] == "dave"
     fetched = client.get(f"/api/messages/{room['id']}", headers=headers)

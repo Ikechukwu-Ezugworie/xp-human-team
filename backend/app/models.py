@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
 Base = declarative_base()
+
 
 class User(Base):
     __tablename__ = "users"
@@ -13,6 +14,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     rooms = relationship("Room", secondary="room_members", back_populates="members")
     messages = relationship("Message", back_populates="author")
+
 
 class Room(Base):
     __tablename__ = "rooms"
@@ -24,10 +26,12 @@ class Room(Base):
     members = relationship("User", secondary="room_members", back_populates="rooms")
     messages = relationship("Message", back_populates="room")
 
+
 class RoomMember(Base):
     __tablename__ = "room_members"
     room_id = Column(Integer, ForeignKey("rooms.id"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+
 
 class Message(Base):
     __tablename__ = "messages"

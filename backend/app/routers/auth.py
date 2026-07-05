@@ -7,6 +7,7 @@ from app.security import create_access_token
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
+
 @router.post("/register", response_model=TokenResponse)
 async def register(user_data: UserRegister, db: Session = Depends(get_db)):
     existing = get_user_by_username(db, user_data.username)
@@ -16,6 +17,7 @@ async def register(user_data: UserRegister, db: Session = Depends(get_db)):
     token = create_access_token(user.id)
     return {"access_token": token, "token_type": "bearer"}
 
+
 @router.post("/login", response_model=TokenResponse)
 async def login(user_data: UserLogin, db: Session = Depends(get_db)):
     user = get_user_by_username(db, user_data.username)
@@ -23,6 +25,7 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token(user.id)
     return {"access_token": token, "token_type": "bearer"}
+
 
 @router.post("/logout")
 async def logout():
