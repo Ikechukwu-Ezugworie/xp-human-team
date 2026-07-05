@@ -1,21 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from datetime import timedelta
-from app.crud import create_user, get_user_by_username, verify_password, hash_password
+from app.crud import create_user, get_user_by_username, verify_password
 from app.schemas import UserRegister, UserLogin, TokenResponse
 from app.database import get_db
-import jwt
-import os
+from app.security import create_access_token
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
-ALGORITHM = "HS256"
-
-def create_access_token(user_id: int):
-    data = {"sub": str(user_id)}
-    encoded = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded
 
 @router.post("/register", response_model=TokenResponse)
 async def register(user_data: UserRegister, db: Session = Depends(get_db)):

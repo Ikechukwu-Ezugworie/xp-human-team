@@ -38,3 +38,7 @@ class Message(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     author = relationship("User", back_populates="messages")
     room = relationship("Room", back_populates="messages")
+
+    @property
+    def author_name(self):
+        return self.author.username if self.author else "unknown"

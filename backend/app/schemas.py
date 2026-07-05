@@ -36,6 +36,7 @@ class Message(BaseModel):
     id: int
     room_id: int
     author_id: int
+    author_name: str = "unknown"
     content: str
     created_at: datetime
     class Config:
