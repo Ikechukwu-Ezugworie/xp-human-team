@@ -11,4 +11,6 @@ build/
 *.log
 data/*.csv
 data/*.json
-data/*.db
+data/*.dbtest_venv/
+*.db
+coverage/
