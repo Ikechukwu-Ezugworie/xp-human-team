@@ -1,38 +1,127 @@
-.login-container {
+.login-page {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+  padding: 16px;
 }
 
-.login-container form {
+.login-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 25px 60px rgba(17, 24, 39, 0.35);
+}
+
+.brand {
   display: flex;
-  flex-direction: column;
-  width: 300px;
+  align-items: center;
   gap: 10px;
 }
 
-.login-container input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.brand h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.5px;
 }
 
-.login-container button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+.tagline {
+  color: var(--muted);
+  margin: 6px 0 24px;
+  font-size: 14px;
+}
+
+.tabs {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+
+.tabs button {
+  flex: 1;
   border: none;
-  border-radius: 4px;
+  background: transparent;
+  padding: 9px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.login-container button:hover {
-  background-color: #0056b3;
+.tabs button.active {
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.login-card input {
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.login-card input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.login-card .submit {
+  margin-top: 6px;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.login-card .submit:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.login-card .submit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.login-card .submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .error {
-  color: red;
-  margin-top: 10px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 10px;
+  font-size: 13px;
 }

@@ -1,39 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Login from './components/Login';
 import Chat from './components/Chat';
 import './App.css';
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const token = localStorage.getItem('token');
+  const [session, setSession] = useState(() => {
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    return token && username ? { token, username } : null;
+  });
 
-  useEffect(() => {
-    if (token) {
-      setAuthenticated(true);
-      const user_id = localStorage.getItem('user_id');
-      setUser({ id: user_id });
-    }
-  }, [token]);
-
-  const handleLogin = (token, user_id) => {
+  const handleLogin = (token, username) => {
     localStorage.setItem('token', token);
-    localStorage.setItem('user_id', user_id);
-    setAuthenticated(true);
-    setUser({ id: user_id });
+    localStorage.setItem('username', username);
+    setSession({ token, username });
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
-    setAuthenticated(false);
-    setUser(null);
+    localStorage.removeItem('username');
+    setSession(null);
   };
 
   return (
     <div className="App">
-      {authenticated ? (
-        <Chat user={user} onLogout={handleLogout} />
+      {session ? (
+        <Chat username={session.username} onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
       )}

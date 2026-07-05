@@ -1,40 +1,41 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-function useWebSocket(room) {
-  const [ws, setWs] = useState(null);
+function useWebSocket(room, username, onMessage) {
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [connected, setConnected] = useState(false);
+  const onMessageRef = useRef(onMessage);
+  onMessageRef.current = onMessage;
 
   useEffect(() => {
-    if (!room) return;
+    if (!room) {
+      setOnlineUsers([]);
+      return undefined;
+    }
 
-    const wsUrl = `${process.env.REACT_APP_WS_URL || 'ws://localhost:8000'}/ws/${room.id}`;
-    const websocket = new WebSocket(wsUrl);
+    const base = process.env.REACT_APP_WS_URL || 'ws://localhost:8000';
+    const ws = new WebSocket(
+      `${base}/ws/${room.id}?username=${encodeURIComponent(username || 'anonymous')}`
+    );
 
-    websocket.onopen = () => console.log('Connected');
-    websocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'users') {
-        setOnlineUsers(data.users);
+    ws.onopen = () => setConnected(true);
+    ws.onclose = () => setConnected(false);
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'presence') {
+          setOnlineUsers(data.users || []);
+        } else if (data.type === 'message' && data.message) {
+          onMessageRef.current?.(data.message);
+        }
+      } catch (err) {
+        console.error('Failed to parse WebSocket payload', err);
       }
     };
-    websocket.onerror = (err) => console.error(err);
-    websocket.onclose = () => console.log('Disconnected');
 
-    setWs(websocket);
+    return () => ws.close();
+  }, [room, username]);
 
-    return () => websocket.close();
-  }, [room]);
-
-  const sendMessage = useCallback(
-    (data) => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(data));
-      }
-    },
-    [ws]
-  );
-
-  return { sendMessage, onlineUsers };
+  return { onlineUsers, connected };
 }
 
 export default useWebSocket;

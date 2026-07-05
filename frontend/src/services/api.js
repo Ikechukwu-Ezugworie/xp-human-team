@@ -17,4 +17,17 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// If a stored token is rejected, clear the session and return to login.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      window.location.reload();
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
